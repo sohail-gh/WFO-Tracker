@@ -4,6 +4,8 @@
 
     <!-- Strict offline policy: zero network permissions -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+    <!-- Remove unused transitive foreground service permission -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove" />
 
     <application
         android:name=".WfoApplication"

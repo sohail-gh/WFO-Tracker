@@ -13,3 +13,9 @@ captures/
 .cxx
 *.apk
 *.aab
+
+# Release signing & keystores
+keystore.properties
+*.jks
+*.keystore
+

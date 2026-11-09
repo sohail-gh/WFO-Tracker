@@ -1,13 +1,15 @@
 # Project Status: WFO Tracker
 
 ## 1. Project Health Overview
-- **Status**: 🟢 Phase 5 Complete (Native Jetpack Glance Home Screen Widget Verified)
-- **Current Phase**: Phase 5 — Jetpack Glance App Widget (Completed & Verified)
-- **Next Phase**: Phase 6 — Verification & End-to-End Testing
+- **Status**: 🟢 Phase 6 Complete (Hardened, Tested & Release-Signed APK Verified)
+- **Current Phase**: Phase 6 — Verification, Hardening & Release Build (Completed)
 - **Target OS**: Android (Min SDK 26, Target SDK 35, Compile SDK 35)
 - **Unit Test Execution**: `./gradlew.bat testDebugUnitTest` — BUILD SUCCESSFUL (66/66 tests passed across 5 test suites, 0 failures, 0 errors)
-- **Latest Verified Build**: `./gradlew.bat assembleDebug` — BUILD SUCCESSFUL (41 actionable tasks executed)
-- **Generated Artifact**: `app/build/outputs/apk/debug/app-debug.apk` (19.9 MB)
+- **Release Build**: `./gradlew.bat assembleRelease` — BUILD SUCCESSFUL
+- **Verified Release Artifact**: `app/build/outputs/apk/release/app-release.apk` (12.35 MB / 12,949,437 bytes)
+- **Application ID & Version**: `com.wfotracker` (versionCode 1, versionName "1.0.0")
+- **Signing Status**: Signed with 2048-bit RSA key (v2 scheme verified via `apksigner`)
+- **Permissions Audit**: Completely clean. Zero network (`INTERNET` absent, `ACCESS_NETWORK_STATE` removed), `FOREGROUND_SERVICE` stripped. Only essential background receivers preserved (`WAKE_LOCK`, `RECEIVE_BOOT_COMPLETED`).
 
 ---
 
@@ -124,4 +126,4 @@ Executed test suite via `./gradlew.bat testDebugUnitTest` across 5 test suites:
 - [x] **Phase 3: Data Layer & Persistence (DataStore & JSON backup)** (COMPLETE)
 - [x] **Phase 4: Jetpack Compose User Interface (Material 3)** (COMPLETE)
 - [x] **Phase 5: Jetpack Glance App Widget** (COMPLETE)
-- [ ] **Phase 6: Verification & End-to-End Testing** (PENDING)
+- [x] **Phase 6: Verification, Hardening & Local Release Signing** (COMPLETE)

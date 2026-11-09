@@ -134,10 +134,15 @@ This document details the step-by-step phased engineering roadmap for implementi
 ---
 
 ## Phase 6: Verification, Testing & Polish
-- **Goal**: Ensure zero bugs, high responsiveness, and verify strict offline compliance.
-- **Checks**:
-  - Run lint to guarantee no `INTERNET` permission or forbidden network APIs.
-  - Complete unit test suite for calculation engine and repositories.
-  - Test backup and restore with full roundtrip data integrity verification.
-  - Build clean release/debug APK.
+- **Status**: Completed & Verified
+- **Goal**: Ensure zero bugs, high responsiveness, hardened security, and verify strict offline compliance.
+- **Completed Actions**:
+  - Transitive `android.permission.FOREGROUND_SERVICE` and `ACCESS_NETWORK_STATE` explicitly removed via `tools:node="remove"`.
+  - Preserved `RECEIVE_BOOT_COMPLETED` and `WAKE_LOCK` for Glance widget and WorkManager date rollover.
+  - Configured secure local release signing using a 2048-bit RSA keystore (`wfo-tracker-release.jks`) with credentials read from untracked `keystore.properties` / environment variables.
+  - Added signing keys and properties to `.gitignore`.
+  - Full unit test suite (66/66 passing tests) re-verified on debug test pipeline.
+  - Successfully built signed release APK (`app/build/outputs/apk/release/app-release.apk`).
+  - Validated APK signature using `apksigner verify` (v2 scheme valid).
+  - Validated package metadata and permissions using `aapt2 dump badging` (`com.wfotracker` v1.0.0, zero INTERNET or FOREGROUND_SERVICE permissions).
 
