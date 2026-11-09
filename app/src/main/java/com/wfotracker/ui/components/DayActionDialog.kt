@@ -270,3 +270,4 @@ private sealed interface DialogMode {
     data object MarkHoliday : DialogMode
     data object MarkLeave : DialogMode
 }
+
