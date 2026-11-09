@@ -94,3 +94,34 @@
 - **Consequences**:
   - Eliminates state synchronization anomalies between WFH and unlogged working days.
   - Enforces strict data integrity: marking a date as Holiday/Leave strictly clears any Office Attendance; removing the Holiday/Leave returns it cleanly to an eligible Working Day without resurrecting stale attendance.
+
+
+---
+
+## ADR-009: Agreed JSON Schema and Atomic Validation Pattern for SAF Backups
+- **Date**: 2026-11-09
+- **Status**: Accepted
+- **Context**: Users require reliable offline backup and restore of their attendance history and settings across devices without requiring network or external accounts. A corrupted, tampered, or malformed backup file must never leave the application in a partially updated or invalid state.
+- **Decision**: 
+  1. Standardize on the canonical JSON schema:
+     ```json
+     {
+       "settings": {
+         "target_percent": 40,
+         "glass_opacity": 25
+       },
+       "office": ["2026-11-02"],
+       "overrides": {
+         "2027-01-26": {
+           "state": "holiday",
+           "name": "Republic Day"
+         }
+       }
+     }
+     ```
+  2. Implement a two-phase atomic import in `WfoBackupManager` and `WfoRepository`:
+     - Phase A: Rigorous validation of JSON syntax, date formatting (`yyyy-MM-dd`), value ranges (`target_percent` in 1..100, `glass_opacity` in 0..100), override states (`holiday` / `leave`), and resolution of conflicts (overrides take precedence over office attendance).
+     - Phase B: Single-transaction atomic replacement in `dataStore.edit { ... }`.
+- **Consequences**:
+  - Malformed, empty, or invalid backup files fail fast and return `Result.failure` without touching stored user data.
+  - No broad storage permissions required; fully compliant with Android Storage Access Framework (SAF).

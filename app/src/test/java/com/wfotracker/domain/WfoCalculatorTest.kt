@@ -245,6 +245,41 @@ class WfoCalculatorTest {
         assertFalse(summary.isTargetMet)
     }
 
+    @Test
+    fun `test future month calculation with days pre-marked as office correctly reduces daysLeft`() {
+        val futureMonth = YearMonth.of(2028, 8) // August 2028: 31 calendar days, 23 weekdays
+        val independenceDay = LocalDate.of(2028, 8, 15) // Tuesday
+
+        val overrides = mapOf(
+            independenceDay to DateOverride(independenceDay, WfoDayState.HOLIDAY, "Independence Day")
+        )
+        // Pre-mark 2 future dates as OFFICE
+        val preMarkedOffice = setOf(
+            LocalDate.of(2028, 8, 1), // Tuesday
+            LocalDate.of(2028, 8, 2)  // Wednesday
+        )
+
+        val summary = WfoCalculator.calculateMonthlySummary(
+            month = futureMonth,
+            officeAttendanceDates = preMarkedOffice,
+            overrides = overrides,
+            settings = WfoSettings(targetPercentage = 40),
+            today = LocalDate.of(2026, 11, 9) // Current date is in 2026
+        )
+
+        // 23 weekdays minus 1 holiday = 22 working days
+        assertEquals(22, summary.workingDays)
+        assertEquals(2, summary.attendedDays)
+        // 22 * 40% = 8.8 -> 9 required days
+        assertEquals(9, summary.requiredOfficeDays)
+        assertEquals(7, summary.remainingOfficeDays) // 9 - 2 = 7
+        // Rule 9: daysLeft = eligible working days excluding dates already marked OFFICE
+        // 22 eligible working days minus 2 pre-marked office days = 20 days left
+        assertEquals(20, summary.daysLeft)
+        assertFalse(summary.isTargetOutOfReach) // 7 <= 20
+        assertFalse(summary.isTargetMet)
+    }
+
     // =========================================================================
     // 5. Past and Future Month Calculations
     // =========================================================================

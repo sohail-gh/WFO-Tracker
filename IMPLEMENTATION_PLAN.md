@@ -43,21 +43,36 @@ This document details the step-by-step phased engineering roadmap for implementi
 ---
 
 ## Phase 3: Data Layer & Persistence
+- **Status**: Completed & Verified
 - **Goal**: Resilient, offline storage using Preferences DataStore and local JSON formatting.
 - **Components**:
-  - `UserSettingsRepository`:
-    - Monthly target percentage (Int, default 40).
-    - Standard weekend definition (default: Saturday, Sunday).
-  - `AttendanceRepository`:
-    - Persist day-by-day records (`LocalDate -> WfoStatus`).
-    - Query records by month, range, or single date.
+  - `WfoSettings`:
+    - Monthly target percentage (Int, default 40, valid 1..100).
+    - Glass opacity percentage for widget (Int, default 25, valid 0..100).
+  - `WfoRepository`:
+    - Single source of truth backed by Preferences DataStore.
+    - Persist day-by-day records (`LocalDate -> WfoDayState`).
     - Flow-based observable streams emitting updates to UI and widget.
-  - `HolidaysRepository`:
-    - Add/remove/list manual holidays (past & future).
-    - Add/remove/list approved leaves (past & future).
-  - `BackupRestoreRepository`:
-    - Export complete dataset (settings, holidays, leaves, attendance history) to an unencrypted JSON payload via SAF `ActivityResultContracts.CreateDocument`.
-    - Import and validate JSON payload via `ActivityResultContracts.OpenDocument` with schema version check.
+    - Atomic data integrity enforcement: marking holiday/leave immediately strips office attendance; clearing holiday/leave restores a normal working day without reviving stale office attendance.
+  - `WfoBackupManager`:
+    - Agreed JSON schema export and import:
+      ```json
+      {
+        "settings": {
+          "target_percent": 40,
+          "glass_opacity": 25
+        },
+        "office": ["2026-11-02"],
+        "overrides": {
+          "2027-01-26": {
+            "state": "holiday",
+            "name": "Republic Day"
+          }
+        }
+      }
+      ```
+    - Complete pre-import validation (dates, percentages, opacity, states).
+    - Atomic DataStore import ensuring malformed or invalid files never partially overwrite state.
 
 ---
 
