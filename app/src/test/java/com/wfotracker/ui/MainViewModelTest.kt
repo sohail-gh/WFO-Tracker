@@ -249,6 +249,7 @@ class FakeWfoRepository : WfoRepository {
     }
 
     override suspend fun markHolidayRange(startDate: LocalDate, endDate: LocalDate, name: String?) {
+        require(!endDate.isBefore(startDate)) { "End date $endDate cannot be before start date $startDate" }
         val overrides = _attendance.value.overrides.toMutableMap()
         val office = _attendance.value.officeAttendanceDates.toMutableSet()
         var curr = startDate
@@ -277,6 +278,7 @@ class FakeWfoRepository : WfoRepository {
     }
 
     override suspend fun markLeaveRange(startDate: LocalDate, endDate: LocalDate, reason: String?) {
+        require(!endDate.isBefore(startDate)) { "End date $endDate cannot be before start date $startDate" }
         val overrides = _attendance.value.overrides.toMutableMap()
         val office = _attendance.value.officeAttendanceDates.toMutableSet()
         var curr = startDate

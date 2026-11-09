@@ -273,5 +273,26 @@ class WfoBackupManagerTest {
         assertEquals(state.officeAttendanceDates, restoredState.officeAttendanceDates)
         assertEquals(state.overrides, restoredState.overrides)
     }
+
+    @Test
+    fun `test backup import sanitizes weekend dates from office list`() {
+        // 2026-11-07 is Saturday, 2026-11-08 is Sunday, 2026-11-09 is Monday
+        val jsonWithWeekends = """
+        {
+          "settings": { "target_percent": 40, "glass_opacity": 25 },
+          "office": ["2026-11-07", "2026-11-08", "2026-11-09"],
+          "overrides": {}
+        }
+        """.trimIndent()
+
+        val result = WfoBackupManager.validateAndParse(jsonWithWeekends)
+        assertTrue(result.isSuccess)
+
+        val (state, _) = result.getOrThrow()
+        // Saturday and Sunday must be sanitized out; only Monday remains
+        assertEquals(setOf(LocalDate.of(2026, 11, 9)), state.officeAttendanceDates)
+        assertFalse(state.officeAttendanceDates.contains(LocalDate.of(2026, 11, 7)))
+        assertFalse(state.officeAttendanceDates.contains(LocalDate.of(2026, 11, 8)))
+    }
 }
 

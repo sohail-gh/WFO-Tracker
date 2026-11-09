@@ -155,7 +155,9 @@ fun AddOverrideDialog(
                     if (!isRange) {
                         onSaveSingle(singleDate, selectedState, finalLabel)
                     } else {
-                        onSaveRange(startDate, endDate, selectedState, finalLabel)
+                        val actualStart = if (startDate.isAfter(endDate)) endDate else startDate
+                        val actualEnd = if (startDate.isAfter(endDate)) startDate else endDate
+                        onSaveRange(actualStart, actualEnd, selectedState, finalLabel)
                     }
                     onDismiss()
                 }

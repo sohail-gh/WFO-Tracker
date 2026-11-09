@@ -10,6 +10,7 @@ import com.wfotracker.domain.model.WfoSettings
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
@@ -134,9 +135,13 @@ object WfoBackupManager {
             }
 
             // 4. Enforce Data Integrity:
-            // "Marking a date as holiday or leave must remove its office attendance."
-            // If the backup file erroneously contained both for the same date, override wins.
-            val sanitizedOfficeDates = parsedOfficeDates.filterNot { parsedOverrides.containsKey(it) }.toSet()
+            // a) Weekends can never record office attendance.
+            // b) Marking a date as holiday or leave strictly removes any office attendance.
+            // If the backup file erroneously contained weekend office dates or override conflicts, sanitize them.
+            val sanitizedOfficeDates = parsedOfficeDates
+                .filterNot { it.dayOfWeek == DayOfWeek.SATURDAY || it.dayOfWeek == DayOfWeek.SUNDAY }
+                .filterNot { parsedOverrides.containsKey(it) }
+                .toSet()
 
             val state = WfoAttendanceState(
                 officeAttendanceDates = sanitizedOfficeDates,

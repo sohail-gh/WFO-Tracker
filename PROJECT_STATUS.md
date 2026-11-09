@@ -1,11 +1,11 @@
 # Project Status: WFO Tracker
 
 ## 1. Project Health Overview
-- **Status**: 🟢 Phase 4 Complete (Jetpack Compose Material 3 UI Verified)
+- **Status**: 🟢 Phase 4 Complete (Jetpack Compose Material 3 UI Verified & Polished)
 - **Current Phase**: Phase 4 — Jetpack Compose User Interface (Material 3) (Completed & Verified)
 - **Next Phase**: Phase 5 — Jetpack Glance App Widget
 - **Target OS**: Android (Min SDK 26, Target SDK 35, Compile SDK 35)
-- **Unit Test Execution**: `./gradlew.bat testDebugUnitTest` — BUILD SUCCESSFUL (56/56 tests passed across 4 test suites, 0 failures, 0 errors)
+- **Unit Test Execution**: `./gradlew.bat testDebugUnitTest` — BUILD SUCCESSFUL (61/61 tests passed across 4 test suites, 0 failures, 0 errors)
 - **Latest Verified Build**: `./gradlew.bat assembleDebug` — BUILD SUCCESSFUL (35 actionable tasks executed)
 - **Generated Artifact**: `app/build/outputs/apk/debug/app-debug.apk` (19.3 MB)
 
@@ -22,8 +22,10 @@
 | **Integer Arithmetic Ceiling** | `(workingDays * targetPercentage + 99) / 100` | 🟢 Implemented & Tested |
 | **Pure Kotlin Domain Engine** | Zero Android UI/Context/Clock dependencies | 🟢 Implemented in `WfoCalculator` |
 | **Attendance State Model** | `WORKING_DAY`, `OFFICE`, `HOLIDAY`, `LEAVE`, `WEEKEND` (derived). No WFH state. | 🟢 Implemented in `WfoDayState` |
+| **Calendar State Colors** | Office: Green, Holiday: Purple, Leave: Amber, Today: Blue outline, Weekend: Dimmed | 🟢 Corrected & Verified |
 | **Data Integrity Rules** | Holiday/leave clears office attendance; clearing restores working day | 🟢 Enforced in `WfoAttendanceState` & `WfoRepositoryImpl` |
-| **Manual Holidays & Leave** | Date-range and single-date override models (`DateOverride`) | 🟢 Implemented & Tested |
+| **Weekend Attendance Sanitization** | Restricts manual and imported office dates to non-weekends | 🟢 Enforced & Tested |
+| **Manual Holidays & Leave** | Date-range and single-date override models (`DateOverride`) | 🟢 Implemented & Tested across boundaries |
 | **Configurable Target (1-100%)** | Validated `WfoSettings(targetPercentage in 1..100)` (default: 40%) | 🟢 Implemented & Tested |
 | **Glass Opacity (0-100%)** | Validated `WfoSettings(glassOpacity in 0..100)` (default: 25%) | 🟢 Implemented & Tested |
 | **Preferences DataStore** | Single source of truth via `androidx.datastore:datastore-preferences:1.1.2` | 🟢 Implemented in `WfoRepositoryImpl` |
@@ -53,21 +55,24 @@
 
 ---
 
-## 4. Phase 4 Test Results Summary
+## 4. Phase 4 Test Results Summary (Verified Gradle XML Reports)
 
 Executed test suite via `./gradlew.bat testDebugUnitTest` across 4 test suites:
-- **`com.wfotracker.ui.MainViewModelTest`**: 9/9 passed (0 failures, 0 errors)
-  - `test initial month is current month`
-  - `test month navigation forwards and backwards`
-  - `test setSelectedMonth`
-  - `test toggleOffice updates repository`
-  - `test markHoliday and clearHoliday updates repository and emits snackbar`
-  - `test markLeave and clearLeave updates repository`
-  - `test markHolidayRange updates range atomically`
-  - `test markLeaveRange updates range atomically`
-  - `test update settings through ViewModel`
-  - `test uiState reflects attendance updates and calculation`
-- **`com.wfotracker.data.WfoRepositoryTest`**: 11/11 passed (0 failures, 0 errors)
+- **`com.wfotracker.data.WfoBackupManagerTest`**: 13/13 passed (0 failures, 0 errors)
+  - `test export matches agreed JSON schema`
+  - `test import exact agreed schema snippet from requirements`
+  - `test serialization roundtrip preserves complete state and settings`
+  - `test missing optional fields use safe defaults`
+  - `test malformed JSON fails validation`
+  - `test empty JSON fails validation`
+  - `test invalid target percentage fails validation`
+  - `test invalid glass opacity fails validation`
+  - `test invalid date format fails validation`
+  - `test invalid override state fails validation`
+  - `test data integrity rule enforced when date is in both office and overrides`
+  - `test stream export and import roundtrip`
+  - `test backup import sanitizes weekend dates from office list`
+- **`com.wfotracker.data.WfoRepositoryTest`**: 14/14 passed (0 failures, 0 errors)
   - `test default settings`
   - `test update settings`
   - `test mark office and toggle office attendance`
@@ -79,12 +84,24 @@ Executed test suite via `./gradlew.bat testDebugUnitTest` across 4 test suites:
   - `test markLeaveRange atomically marks range and clears office attendance`
   - `test atomic backup import replaces data cleanly`
   - `test atomic backup import failure does not alter existing data`
-- **`com.wfotracker.data.WfoBackupManagerTest`**: 12/12 passed (0 failures, 0 errors)
-  - All 12 serialization, validation, conflict resolution, and roundtrip tests passed.
+  - `test backup import sanitizes weekend office dates from storage`
+  - `test holiday and leave range across month and year boundaries`
+  - `test date range with start after end throws exception`
 - **`com.wfotracker.domain.WfoCalculatorTest`**: 24/24 passed (0 failures, 0 errors)
-  - All 24 calculation tests passed.
+  - All 24 core calculation and boundary tests passed.
+- **`com.wfotracker.ui.MainViewModelTest`**: 10/10 passed (0 failures, 0 errors)
+  - `test initial month is current month`
+  - `test month navigation forwards and backwards`
+  - `test setSelectedMonth`
+  - `test toggleOffice updates repository`
+  - `test markHoliday and clearHoliday updates repository and emits snackbar`
+  - `test markLeave and clearLeave updates repository`
+  - `test markHolidayRange updates range atomically`
+  - `test markLeaveRange updates range atomically`
+  - `test update settings through ViewModel`
+  - `test uiState reflects attendance updates and calculation`
 
-**Total**: **56 unit tests executed, 56 passed, 0 failed, 0 skipped**.
+**Total**: **61 unit tests executed, 61 passed, 0 failed, 0 skipped**.
 
 ---
 

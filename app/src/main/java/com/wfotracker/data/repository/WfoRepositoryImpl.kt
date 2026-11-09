@@ -68,7 +68,10 @@ class WfoRepositoryImpl(
                 } catch (e: Exception) {
                     null
                 }
-            }.filterNot { parsedOverrides.containsKey(it) }.toSet()
+            }
+            .filterNot { it.dayOfWeek == DayOfWeek.SATURDAY || it.dayOfWeek == DayOfWeek.SUNDAY }
+            .filterNot { parsedOverrides.containsKey(it) }
+            .toSet()
 
             WfoAttendanceState(
                 officeAttendanceDates = parsedOfficeDates,

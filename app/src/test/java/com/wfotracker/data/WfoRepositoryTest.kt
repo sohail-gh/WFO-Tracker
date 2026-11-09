@@ -238,4 +238,58 @@ class WfoRepositoryTest {
         assertEquals("Annual Leave", state.overrides[middle]?.name)
         assertFalse("Office attendance must be cleared", state.officeAttendanceDates.contains(middle))
     }
+
+    @Test
+    fun `test backup import sanitizes weekend office dates from storage`() = runBlocking {
+        // Saturday 2026-11-14, Sunday 2026-11-15, Monday 2026-11-16
+        val backupJson = """
+        {
+          "settings": { "target_percent": 50, "glass_opacity": 30 },
+          "office": ["2026-11-14", "2026-11-15", "2026-11-16"],
+          "overrides": {}
+        }
+        """.trimIndent()
+
+        val result = repository.importBackupFromJson(backupJson)
+        assertTrue(result.isSuccess)
+
+        val state = repository.getAttendanceState()
+        assertEquals(setOf(LocalDate.of(2026, 11, 16)), state.officeAttendanceDates)
+        assertFalse(state.officeAttendanceDates.contains(LocalDate.of(2026, 11, 14)))
+        assertFalse(state.officeAttendanceDates.contains(LocalDate.of(2026, 11, 15)))
+    }
+
+    @Test
+    fun `test holiday and leave range across month and year boundaries`() = runBlocking {
+        // Range across month boundary: Nov 29 to Dec 2 (4 days)
+        val novStart = LocalDate.of(2026, 11, 29)
+        val decEnd = LocalDate.of(2026, 12, 2)
+        repository.markLeaveRange(novStart, decEnd, "Winter Break")
+
+        val novDecState = repository.getAttendanceState()
+        assertEquals(4, novDecState.overrides.size)
+        assertTrue(novDecState.overrides.containsKey(LocalDate.of(2026, 11, 29)))
+        assertTrue(novDecState.overrides.containsKey(LocalDate.of(2026, 11, 30)))
+        assertTrue(novDecState.overrides.containsKey(LocalDate.of(2026, 12, 1)))
+        assertTrue(novDecState.overrides.containsKey(LocalDate.of(2026, 12, 2)))
+
+        // Range across year boundary: Dec 30, 2026 to Jan 2, 2027 (4 days)
+        val yearStart = LocalDate.of(2026, 12, 30)
+        val yearEnd = LocalDate.of(2027, 1, 2)
+        repository.markHolidayRange(yearStart, yearEnd, "New Year Break")
+
+        val state = repository.getAttendanceState()
+        assertEquals(8, state.overrides.size)
+        assertTrue(state.overrides.containsKey(LocalDate.of(2026, 12, 30)))
+        assertTrue(state.overrides.containsKey(LocalDate.of(2026, 12, 31)))
+        assertTrue(state.overrides.containsKey(LocalDate.of(2027, 1, 1)))
+        assertTrue(state.overrides.containsKey(LocalDate.of(2027, 1, 2)))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `test date range with start after end throws exception`() = runBlocking {
+        val start = LocalDate.of(2026, 11, 10)
+        val end = LocalDate.of(2026, 11, 5)
+        repository.markHolidayRange(start, end, "Invalid Range")
+    }
 }

@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,14 +42,16 @@ import com.wfotracker.ui.theme.LeaveAmberContainerDark
 import com.wfotracker.ui.theme.LeaveAmberContainerLight
 import com.wfotracker.ui.theme.LeaveAmberDark
 import com.wfotracker.ui.theme.LeaveAmberLight
-import com.wfotracker.ui.theme.OfficeBlueContainerDark
-import com.wfotracker.ui.theme.OfficeBlueContainerLight
-import com.wfotracker.ui.theme.OfficeBlueDark
-import com.wfotracker.ui.theme.OfficeBlueLight
-import com.wfotracker.ui.theme.WeekendContainerDark
-import com.wfotracker.ui.theme.WeekendContainerLight
-import com.wfotracker.ui.theme.WeekendGreyDark
-import com.wfotracker.ui.theme.WeekendGreyLight
+import com.wfotracker.ui.theme.OfficeGreenContainerDark
+import com.wfotracker.ui.theme.OfficeGreenContainerLight
+import com.wfotracker.ui.theme.OfficeGreenDark
+import com.wfotracker.ui.theme.OfficeGreenLight
+import com.wfotracker.ui.theme.TodayOutlineBlueDark
+import com.wfotracker.ui.theme.TodayOutlineBlueLight
+import com.wfotracker.ui.theme.WeekendDimmedContainerDark
+import com.wfotracker.ui.theme.WeekendDimmedContainerLight
+import com.wfotracker.ui.theme.WeekendDimmedDark
+import com.wfotracker.ui.theme.WeekendDimmedLight
 import java.time.LocalDate
 
 @Composable
@@ -65,9 +66,9 @@ fun DayCell(
 ) {
     val (backgroundColor, textColor, badgeColor) = when (state) {
         WfoDayState.OFFICE -> Triple(
-            if (darkTheme) OfficeBlueContainerDark else OfficeBlueContainerLight,
-            if (darkTheme) OfficeBlueDark else OfficeBlueLight,
-            if (darkTheme) OfficeBlueDark else OfficeBlueLight
+            if (darkTheme) OfficeGreenContainerDark else OfficeGreenContainerLight,
+            if (darkTheme) OfficeGreenDark else OfficeGreenLight,
+            if (darkTheme) OfficeGreenDark else OfficeGreenLight
         )
         WfoDayState.HOLIDAY -> Triple(
             if (darkTheme) HolidayPurpleContainerDark else HolidayPurpleContainerLight,
@@ -80,8 +81,8 @@ fun DayCell(
             if (darkTheme) LeaveAmberDark else LeaveAmberLight
         )
         WfoDayState.WEEKEND -> Triple(
-            if (darkTheme) WeekendContainerDark else WeekendContainerLight,
-            if (darkTheme) WeekendGreyDark else WeekendGreyLight,
+            if (darkTheme) WeekendDimmedContainerDark else WeekendDimmedContainerLight,
+            if (darkTheme) WeekendDimmedDark else WeekendDimmedLight,
             Color.Transparent
         )
         WfoDayState.WORKING_DAY -> Triple(
@@ -99,8 +100,9 @@ fun DayCell(
         WfoDayState.WORKING_DAY -> "Working day"
     }
 
+    // Today indicator: blue outline
     val todayBorder = if (isToday) {
-        BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        BorderStroke(2.dp, if (darkTheme) TodayOutlineBlueDark else TodayOutlineBlueLight)
     } else null
 
     Box(
@@ -162,13 +164,12 @@ fun DayCell(
                     )
                 }
                 WfoDayState.WEEKEND, WfoDayState.WORKING_DAY -> {
-                    // Clean, minimal dot or empty space
                     if (isToday) {
                         Box(
                             modifier = Modifier
                                 .size(4.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary)
+                                .background(if (darkTheme) TodayOutlineBlueDark else TodayOutlineBlueLight)
                         )
                     }
                 }
@@ -188,4 +189,3 @@ fun DayCell(
         }
     }
 }
-

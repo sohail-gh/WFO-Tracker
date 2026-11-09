@@ -46,8 +46,8 @@ import com.wfotracker.ui.components.DayCell
 import com.wfotracker.ui.components.MonthSelectorHeader
 import com.wfotracker.ui.theme.HolidayPurpleLight
 import com.wfotracker.ui.theme.LeaveAmberLight
-import com.wfotracker.ui.theme.OfficeBlueLight
-import com.wfotracker.ui.theme.WeekendGreyLight
+import com.wfotracker.ui.theme.OfficeGreenLight
+import com.wfotracker.ui.theme.WeekendDimmedLight
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -228,10 +228,10 @@ fun CalendarScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            LegendItem(color = OfficeBlueLight, label = "Office")
+            LegendItem(color = OfficeGreenLight, label = "Office")
             LegendItem(color = HolidayPurpleLight, label = "Holiday")
             LegendItem(color = LeaveAmberLight, label = "Leave")
-            LegendItem(color = WeekendGreyLight, label = "Weekend")
+            LegendItem(color = WeekendDimmedLight, label = "Weekend")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
