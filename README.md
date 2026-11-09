@@ -15,8 +15,61 @@ Built strictly without network permissions, external telemetry, or cloud depende
 
 ---
 
+## 🚀 Download APK (v1.0.0 Release)
+
+> [!TIP]
+> ### **Ready to Install: WFO Tracker v1.0.0**
+> 
+> Works on any device running **Android 8.0 (Oreo) or newer** (API 26–35). Zero account setup, zero network traffic, 100% offline.
+> 
+> ### ⬇️ **[Download app-release.apk (12.35 MB)](https://github.com/sohail-gh/WFO-Tracker/releases/download/v1.0.0/app-release.apk)**
+> 
+> 📦 **[View GitHub Release Page (v1.0.0)](https://github.com/sohail-gh/WFO-Tracker/releases/tag/v1.0.0)**
+
+### Quick Install (3 Steps)
+1. **Download**: Tap the [Download app-release.apk](https://github.com/sohail-gh/WFO-Tracker/releases/download/v1.0.0/app-release.apk) button on your Android device.
+2. **Install**: Open the downloaded APK from your browser or file manager (grant *"Install unknown apps"* if prompted).
+3. **Add Widget**: Long-press any empty space on your home screen, tap **Widgets**, find **WFO Tracker**, and place the interactive widget ($4 \times 3$ recommended).
+
+### Verified Release Artifact
+
+| Specification | Details |
+| :--- | :--- |
+| **Direct Download** | [`app-release.apk`](https://github.com/sohail-gh/WFO-Tracker/releases/download/v1.0.0/app-release.apk) |
+| **Release Tag** | [`v1.0.0`](https://github.com/sohail-gh/WFO-Tracker/releases/tag/v1.0.0) |
+| **Package Name** | `com.wfotracker` |
+| **Version** | `1.0.0` (versionCode `1`) |
+| **File Size** | `12,949,437 bytes` (~12.35 MB) |
+| **Supported Android** | Android 8.0 (API 26) through Android 15 (API 35) |
+| **Supported Architectures** | Universal (`arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`) |
+| **Signing Scheme** | APK Signature Scheme v2 (RSA 2048-bit) |
+| **SHA-256 Checksum** | `ccc20ca1daa2dae08e9519eeb37bad1ec1e54f4536b98de557e0798f19562ab7` |
+| **Certificate SHA-256** | `1a00c19ed3386c2471bf6d28070bba4ed526ed6186d025f4115435799f836d48` |
+
+<details>
+<summary><b>Verify Checksum on your machine</b></summary>
+
+**Windows (PowerShell):**
+```powershell
+Get-FileHash -Algorithm SHA256 app-release.apk
+```
+
+**Linux / macOS:**
+```bash
+sha256sum app-release.apk
+```
+
+**Expected output:**
+```text
+ccc20ca1daa2dae08e9519eeb37bad1ec1e54f4536b98de557e0798f19562ab7
+```
+</details>
+
+---
+
 ## Table of Contents
 
+- [🚀 Download APK (v1.0.0 Release)](#-download-apk-v100-release)
 - [Overview & Purpose](#overview--purpose)
 - [Key Features](#key-features)
 - [Monthly WFO Calculation Engine](#monthly-wfo-calculation-engine)
@@ -44,14 +97,12 @@ Built strictly without network permissions, external telemetry, or cloud depende
 - [Privacy & Offline-First Security](#privacy--offline-first-security)
 - [Technology Stack & Architecture](#technology-stack--architecture)
 - [Compatibility & SDK Support](#compatibility--sdk-support)
-- [Installation Guide](#installation-guide)
 - [Developer Setup & Build Instructions](#developer-setup--build-instructions)
   - [Prerequisites](#prerequisites)
   - [Building from Source](#building-from-source)
   - [Running Unit Tests](#running-unit-tests)
   - [Release Signing Configuration](#release-signing-configuration)
 - [Project Structure](#project-structure)
-- [Release Information & Download](#release-information--download)
 - [Known Limitations](#known-limitations)
 - [License](#license)
 
@@ -297,16 +348,6 @@ Verified permissions in the release artifact:
 
 ---
 
-## Installation Guide
-
-1. Download `app-release.apk` from the [GitHub Releases](https://github.com/sohail-gh/WFO-Tracker/releases/tag/v1.0.0) page.
-2. Open your Android file manager or browser downloads.
-3. Tap the downloaded APK file. If prompted, grant permission to "Install unknown apps" for that source.
-4. Complete installation and open **WFO Tracker**.
-5. Long-press your device's home screen, select **Widgets**, locate **WFO Tracker**, and place it on your home screen.
-
----
-
 ## Developer Setup & Build Instructions
 
 ### Prerequisites
@@ -412,44 +453,6 @@ WFO-Tracker/
 
 ---
 
-## Release Information & Download
-
-### v1.0.0 Production Release
-
-- **GitHub Release**: [`v1.0.0`](https://github.com/sohail-gh/WFO-Tracker/releases/tag/v1.0.0)
-- **Direct Download**: [Download app-release.apk](https://github.com/sohail-gh/WFO-Tracker/releases/download/v1.0.0/app-release.apk)
-
-| Attribute | Specification |
-| :--- | :--- |
-| **Filename** | `app-release.apk` |
-| **Package Name** | `com.wfotracker` |
-| **Version Name** | `1.0.0` |
-| **Version Code** | `1` |
-| **File Size** | `12,949,437 bytes` (~12.35 MB) |
-| **Min / Target SDK** | `26` (Android 8.0) / `35` (Android 15) |
-| **Signature Scheme** | APK Signature Scheme v2 (RSA 2048-bit) |
-| **SHA-256 Checksum** | `ccc20ca1daa2dae08e9519eeb37bad1ec1e54f4536b98de557e0798f19562ab7` |
-| **Signer Certificate SHA-256** | `1a00c19ed3386c2471bf6d28070bba4ed526ed6186d025f4115435799f836d48` |
-
-#### Verifying APK Authenticity
-
-On Windows (PowerShell):
-```powershell
-Get-FileHash -Algorithm SHA256 path\to\app-release.apk
-```
-
-On Linux / macOS:
-```bash
-sha256sum path/to/app-release.apk
-```
-
-Expected output:
-```text
-ccc20ca1daa2dae08e9519eeb37bad1ec1e54f4536b98de557e0798f19562ab7
-```
-
----
-
 ## Known Limitations
 
 - **Android 8.0+ Required**: Devices running Android 7.1 or older are not supported due to the requirement for native `java.time` APIs and modern Jetpack Compose.
@@ -462,4 +465,3 @@ ccc20ca1daa2dae08e9519eeb37bad1ec1e54f4536b98de557e0798f19562ab7
 ## License
 
 This project is licensed under the Apache License 2.0. See the LICENSE file for details.
-
