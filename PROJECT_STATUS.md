@@ -1,13 +1,13 @@
 # Project Status: WFO Tracker
 
 ## 1. Project Health Overview
-- **Status**: 🟢 Phase 4 Complete (Jetpack Compose Material 3 UI Verified & Polished)
-- **Current Phase**: Phase 4 — Jetpack Compose User Interface (Material 3) (Completed & Verified)
-- **Next Phase**: Phase 5 — Jetpack Glance App Widget
+- **Status**: 🟢 Phase 5 Complete (Native Jetpack Glance Home Screen Widget Verified)
+- **Current Phase**: Phase 5 — Jetpack Glance App Widget (Completed & Verified)
+- **Next Phase**: Phase 6 — Verification & End-to-End Testing
 - **Target OS**: Android (Min SDK 26, Target SDK 35, Compile SDK 35)
-- **Unit Test Execution**: `./gradlew.bat testDebugUnitTest` — BUILD SUCCESSFUL (61/61 tests passed across 4 test suites, 0 failures, 0 errors)
-- **Latest Verified Build**: `./gradlew.bat assembleDebug` — BUILD SUCCESSFUL (35 actionable tasks executed)
-- **Generated Artifact**: `app/build/outputs/apk/debug/app-debug.apk` (19.3 MB)
+- **Unit Test Execution**: `./gradlew.bat testDebugUnitTest` — BUILD SUCCESSFUL (66/66 tests passed across 5 test suites, 0 failures, 0 errors)
+- **Latest Verified Build**: `./gradlew.bat assembleDebug` — BUILD SUCCESSFUL (41 actionable tasks executed)
+- **Generated Artifact**: `app/build/outputs/apk/debug/app-debug.apk` (19.9 MB)
 
 ---
 
@@ -31,11 +31,18 @@
 | **Preferences DataStore** | Single source of truth via `androidx.datastore:datastore-preferences:1.1.2` | 🟢 Implemented in `WfoRepositoryImpl` |
 | **Agreed JSON Backup Schema** | Standard schema with `settings`, `office`, `overrides` | 🟢 Implemented in `WfoBackupManager` |
 | **Local JSON Backup & Restore** | Storage Access Framework (SAF) export/import with strict validation & atomic replace | 🟢 Implemented & Tested |
-| **Compose & Material 3** | Jetpack Compose BOM 2024.12.01, Material 3 Scaffold, NavigationBar, Gauges | 🟢 Implemented & Verified (Phase 4) |
+| **Compose & Material 3** | Jetpack Compose BOM 2024.12.01, Material 3 Scaffold, NavigationBar, Gauges | 🟢 Implemented & Verified |
 | **Monthly Calendar Grid** | 7-column grid with attendance badges, month navigation, weekday headers | 🟢 Implemented & Verified |
 | **Holidays/Leave Management** | Add single date or range, edit, delete, month/all filters | 🟢 Implemented & Verified |
 | **Target & Opacity Settings** | Real-time sliders with live opacity preview swatch | 🟢 Implemented & Verified |
-| **Jetpack Glance Widget** | `androidx.glance:glance-appwidget:1.1.1` | 🟢 Dependency Resolved (Phase 5) |
+| **Jetpack Glance Widget** | `WfoGlanceWidget` + `WfoWidgetReceiver` with 7-col calendar, metrics, out-of-reach warning | 🟢 Implemented & Verified (Phase 5) |
+| **Widget Month Navigation** | Per-instance month navigation via `NavigateMonthAction : ActionCallback` | 🟢 Implemented & Verified (Phase 5) |
+| **Widget Date Tap-to-App** | Opens app directly with selected date via `MainActivity.EXTRA_SELECTED_DATE` | 🟢 Implemented & Verified (Phase 5) |
+| **Widget Resizing (3x3 to 4x3+)** | Responsive layout scaling based on `LocalSize.current` | 🟢 Implemented & Verified (Phase 5) |
+| **Multi-Instance Support** | Independent per-widget displayed month via `PreferencesGlanceStateDefinition` | 🟢 Implemented & Tested (Phase 5) |
+| **Widget Glass Opacity** | Configurable background alpha derived dynamically from `settings.glassOpacity` | 🟢 Implemented & Verified (Phase 5) |
+| **Widget Change Reactive Refresh** | `WfoWidgetUpdater` triggered on DataStore attendance & settings mutations | 🟢 Implemented & Verified (Phase 5) |
+| **Zero Exact-Alarm Date Rollover**| Best-effort midnight rollover via `ACTION_DATE_CHANGED` & `ACTION_TIMEZONE_CHANGED` | 🟢 Implemented & Verified (Phase 5) |
 | **Single-Module Architecture** | Lean `:app` module without boilerplate multi-project overhead | 🟢 Configured & Verified |
 
 ---
@@ -55,9 +62,9 @@
 
 ---
 
-## 4. Phase 4 Test Results Summary (Verified Gradle XML Reports)
+## 4. Phase 5 Test Results Summary (Verified Gradle XML Reports)
 
-Executed test suite via `./gradlew.bat testDebugUnitTest` across 4 test suites:
+Executed test suite via `./gradlew.bat testDebugUnitTest` across 5 test suites:
 - **`com.wfotracker.data.WfoBackupManagerTest`**: 13/13 passed (0 failures, 0 errors)
   - `test export matches agreed JSON schema`
   - `test import exact agreed schema snippet from requirements`
@@ -100,8 +107,14 @@ Executed test suite via `./gradlew.bat testDebugUnitTest` across 4 test suites:
   - `test markLeaveRange updates range atomically`
   - `test update settings through ViewModel`
   - `test uiState reflects attendance updates and calculation`
+- **`com.wfotracker.widget.WfoWidgetLogicTest`**: 5/5 passed (0 failures, 0 errors)
+  - `testWidgetKeysAndIntentExtraConstants`
+  - `testIndependentMonthNavigationAcrossMultipleInstances`
+  - `testSharedAttendanceDataCalculatedForDifferentInstanceMonths`
+  - `testWidgetDateCellStateEvaluation`
+  - `testTargetOutOfReachWarningCalculation`
 
-**Total**: **61 unit tests executed, 61 passed, 0 failed, 0 skipped**.
+**Total**: **66 unit tests executed, 66 passed, 0 failed, 0 skipped**.
 
 ---
 
@@ -110,5 +123,5 @@ Executed test suite via `./gradlew.bat testDebugUnitTest` across 4 test suites:
 - [x] **Phase 2: Domain Layer & Core Calculation Engine** (COMPLETE)
 - [x] **Phase 3: Data Layer & Persistence (DataStore & JSON backup)** (COMPLETE)
 - [x] **Phase 4: Jetpack Compose User Interface (Material 3)** (COMPLETE)
-- [ ] **Phase 5: Jetpack Glance App Widget** (PENDING)
+- [x] **Phase 5: Jetpack Glance App Widget** (COMPLETE)
 - [ ] **Phase 6: Verification & End-to-End Testing** (PENDING)

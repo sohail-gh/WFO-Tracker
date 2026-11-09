@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">WFO Tracker</string>
+    <string name="widget_name">WFO Calendar Widget</string>
+    <string name="widget_description">Track monthly Return-to-Office compliance and calendar on your home screen.</string>
 </resources>
 

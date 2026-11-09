@@ -125,3 +125,18 @@
 - **Consequences**:
   - Malformed, empty, or invalid backup files fail fast and return `Result.failure` without touching stored user data.
   - No broad storage permissions required; fully compliant with Android Storage Access Framework (SAF).
+
+---
+
+## ADR-010: Glance Widget Multi-Instance State Isolation and Zero-Alarm Rollover
+- **Date**: 2026-11-09
+- **Status**: Accepted
+- **Context**: The home screen widget needs to support multiple instances (e.g. one widget on the primary home screen, another on a secondary dashboard) that may independently navigate forward or backward across months, while sharing the identical underlying office attendance records and user settings. Additionally, date rollovers (e.g. moving the "Today" outline to the new date at midnight) must work without violating the strict "zero unnecessary permissions" policy (specifically avoiding exact alarm permissions like `SCHEDULE_EXACT_ALARM`).
+- **Decision**:
+  1. Use `PreferencesGlanceStateDefinition` for per-instance widget state: Each widget instance stores its displayed month (`widget_displayed_month`) in its own Glance preference store. Month navigation via `NavigateMonthAction` updates only the targeted `GlanceId`, while reading shared attendance data and calculations from `WfoRepository`.
+  2. Implement reactive data synchronization via `WfoWidgetUpdater` listening to the shared DataStore flows in `WfoApplication`.
+  3. Implement best-effort date rollover without exact alarms by combining `updatePeriodMillis="1800000"` (30-minute OS provider updates) with intent-filter broadcasts for `ACTION_DATE_CHANGED`, `ACTION_TIME_SET`, and `ACTION_TIMEZONE_CHANGED` in `WfoWidgetReceiver`.
+- **Consequences**:
+  - Zero alarm permissions required in `AndroidManifest.xml`.
+  - Multiple widget instances operate with complete autonomy for month navigation without state collisions.
+  - Changes to attendance or settings in the app are reflected in the widget immediately with zero manual refresh required.

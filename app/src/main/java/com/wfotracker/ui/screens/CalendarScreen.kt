@@ -62,9 +62,11 @@ fun CalendarScreen(
     onMarkHoliday: (LocalDate, String?) -> Unit,
     onMarkLeave: (LocalDate, String?) -> Unit,
     onClearOverride: (LocalDate) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initialSelectedDate: LocalDate? = null,
+    onDateDialogDismissed: () -> Unit = {}
 ) {
-    var selectedDialogDate by remember { mutableStateOf<LocalDate?>(null) }
+    var selectedDialogDate by remember(initialSelectedDate) { mutableStateOf(initialSelectedDate) }
 
     val daysInMonth = remember(uiState.selectedMonth) {
         val totalDays = uiState.selectedMonth.lengthOfMonth()
@@ -253,7 +255,10 @@ fun CalendarScreen(
             date = date,
             currentState = dayState,
             currentOverride = override,
-            onDismiss = { selectedDialogDate = null },
+            onDismiss = {
+                selectedDialogDate = null
+                onDateDialogDismissed()
+            },
             onToggleOffice = { onToggleOffice(date) },
             onMarkHoliday = { name -> onMarkHoliday(date, name) },
             onMarkLeave = { reason -> onMarkLeave(date, reason) },

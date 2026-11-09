@@ -1,5 +1,6 @@
 package com.wfotracker
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,22 +39,54 @@ import com.wfotracker.ui.screens.OverridesScreen
 import com.wfotracker.ui.screens.SettingsScreen
 import com.wfotracker.ui.theme.WFOTrackerTheme
 import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalDate
+import java.time.YearMonth
 
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        const val EXTRA_SELECTED_DATE = "com.wfotracker.extra.SELECTED_DATE"
+    }
+
     private val viewModel: MainViewModel by viewModels {
         MainViewModel.provideFactory(WfoApplication.getRepository(this))
+    }
+
+    private val incomingDateState = mutableStateOf<LocalDate?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleDateIntent(intent)
+    }
+
+    private fun handleDateIntent(intent: Intent?) {
+        val dateStr = intent?.getStringExtra(EXTRA_SELECTED_DATE) ?: return
+        runCatching {
+            val date = LocalDate.parse(dateStr)
+            viewModel.setSelectedMonth(YearMonth.from(date))
+            incomingDateState.value = date
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        handleDateIntent(intent)
+
         setContent {
             WFOTrackerTheme {
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 var currentScreen by rememberSaveable { mutableStateOf(WfoNavScreen.DASHBOARD) }
                 val snackbarHostState = remember { SnackbarHostState() }
+                val incomingDate by incomingDateState
+
+                LaunchedEffect(incomingDate) {
+                    if (incomingDate != null) {
+                        currentScreen = WfoNavScreen.CALENDAR
+                    }
+                }
 
                 LaunchedEffect(Unit) {
                     viewModel.events.collectLatest { event ->
@@ -129,7 +162,9 @@ class MainActivity : ComponentActivity() {
                                     onToggleOffice = { date -> viewModel.toggleOffice(date) },
                                     onMarkHoliday = { date, name -> viewModel.markHoliday(date, name) },
                                     onMarkLeave = { date, reason -> viewModel.markLeave(date, reason) },
-                                    onClearOverride = { date -> viewModel.clearOverride(date) }
+                                    onClearOverride = { date -> viewModel.clearOverride(date) },
+                                    initialSelectedDate = incomingDate,
+                                    onDateDialogDismissed = { incomingDateState.value = null }
                                 )
                             }
                             WfoNavScreen.OVERRIDES -> {

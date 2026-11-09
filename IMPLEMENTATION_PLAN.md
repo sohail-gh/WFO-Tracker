@@ -103,16 +103,33 @@ This document details the step-by-step phased engineering roadmap for implementi
 ---
 
 ## Phase 5: Jetpack Glance App Widget
-- **Goal**: Glancable, interactive home screen widget that updates instantly.
-- **Widget Specifications**:
-  - Sizes supported: `2x2`, `4x2`, `4x3`.
-  - Content:
-    - Current month name.
-    - Percentage achieved with visual progress bar.
-    - "X / Y days completed" (e.g. "8/10 days WFO").
-    - "Remaining needed: Z days".
-    - Interactive quick-tap action: "Mark WFO Today" directly from widget without launching full app.
-  - Receiver: `GlanceAppWidgetReceiver` with immediate state update upon action.
+- **Status**: Completed & Verified
+- **Goal**: Glancable, interactive home screen widget that renders a full monthly calendar and updates instantly.
+- **Implemented Components**:
+  - `WfoGlanceWidget`: Genuine Jetpack Glance AppWidget (`androidx.glance:glance-appwidget:1.1.1` and `androidx.glance:glance-material3:1.1.1`).
+  - **7-Column Calendar Grid**:
+    - Complete month grid with `Mon..Sun` / `M..S` weekday headers.
+    - Strict semantic color matching: Office (Green), Holiday (Purple), Leave (Amber), Today (Blue outline), Weekend (Dimmed).
+    - Date cell tap handler opening `MainActivity` with `EXTRA_SELECTED_DATE` to deep-link to the exact month and date action dialog.
+  - **Metrics & Indicators**:
+    - Attended / required days counter (e.g. `8/10 Days (80%)`).
+    - Remaining needed days or target achieved status.
+    - Linear progress indicator matching compliance theme colors.
+    - Real-time target out-of-reach warning.
+  - **Multi-Instance Support**:
+    - Independent per-widget displayed month stored in instance Preferences (`PreferencesGlanceStateDefinition`).
+    - Interactive Previous (`◀`) and Next (`▶`) month navigation via `NavigateMonthAction : ActionCallback`.
+    - Tap on month title to immediately reset to the current month.
+    - Shared attendance records and configuration from `WfoRepository`.
+  - **Glassmorphic Opacity**:
+    - Live background alpha and frosted sheen border derived from user's `settings.glassOpacity` (0-100%).
+  - **Resizing Adaptability**:
+    - `SizeMode.Exact` supporting minimum 3x3 (~180x180dp) through standard 4x3 (~260x200dp) and larger layouts.
+    - Dynamic breakpoint scaling for weekday headers (`M..S` vs `Mon..Sun`), month title formatting (`MMM yyyy` vs `MMMM yyyy`), and cell font sizing.
+  - **Reactive Refresh & Date Rollover**:
+    - `WfoWidgetUpdater` broadcasts immediate widget updates on any DataStore attendance or settings change.
+    - Zero exact-alarm permissions: best-effort midnight rollover handled via `ACTION_DATE_CHANGED`, `ACTION_TIMEZONE_CHANGED`, `ACTION_TIME_SET`, and periodic widget provider updates.
+  - **Zero Network Footprint**: Strict offline adherence with zero network permissions.
 
 ---
 
