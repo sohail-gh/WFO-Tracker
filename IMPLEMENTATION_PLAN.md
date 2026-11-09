@@ -77,26 +77,28 @@ This document details the step-by-step phased engineering roadmap for implementi
 ---
 
 ## Phase 4: Jetpack Compose User Interface (Material 3)
+- **Status**: Completed & Verified
 - **Goal**: Modern, accessible, fluid UI following Material Design 3 guidelines.
 - **Screens**:
   1. **Dashboard Screen**:
      - Circular progress gauge showing current WFO % vs Target %.
-     - Status card: "On Track" / "Needs X more days" / "Target Achieved".
-     - Quick-action toggle: Mark today as WFO / WFH / Leave / Holiday in one tap.
-     - Monthly summary card: Working days, Holidays, Leaves, Office days.
+     - Status card: "On Track" / "Needs X more days" / "Target Achieved" / "Out of Reach".
+     - Quick-action toggle: Mark today as WFO / Holiday / Leave in one tap.
+     - Monthly breakdown metrics: Working days, Attended days, Required days, Days left.
   2. **Calendar Screen**:
-     - Month-by-month grid selector.
-     - Color-coded badges per date (Blue for WFO, Green for WFH, Orange for Leave, Purple for Holiday).
-     - Tap date to open quick status bottom sheet to adjust or annotate.
+     - Month-by-month grid selector with weekday headers (`Mon..Sun`).
+     - Color-coded badges per date (Blue for Office, Purple for Holiday, Amber for Leave, Grey for Weekend).
+     - Tap date to open quick status dialog to toggle office, mark holiday with custom name, mark leave with custom reason, or restore working day.
+     - Monthly progress banner and color legend.
   3. **Holidays & Leave Management Screen**:
-     - Segregated tabs for "Holidays" and "Leaves".
-     - Ability to add past, present, or future single dates or date ranges.
-     - Swipe-to-delete or edit entries.
+     - Month filter (`This Month` vs `All Overrides`).
+     - Add single date or multi-day date range with Material 3 DatePickers.
+     - List cards with edit and delete confirmation dialogs.
   4. **Settings & Backup Screen**:
-     - Slider and number input for monthly target % (1% - 100%, default 40%).
-     - Custom weekend selector (e.g. 5-day week, 6-day week).
-     - "Export Data to JSON" button (SAF file picker).
-     - "Import Data from JSON" button (SAF file picker with confirmation dialog).
+     - Sliders for Monthly Target % (1% - 100%, default 40%) and Widget Glass Opacity (0% - 100%, default 25%).
+     - Real-time glass opacity preview swatch.
+     - "Export JSON Backup" and "Restore JSON Backup" buttons using Android Storage Access Framework (SAF) with pre-restore confirmation dialog.
+     - 100% offline & privacy verification badge.
 
 ---
 

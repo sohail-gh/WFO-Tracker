@@ -27,9 +27,11 @@ interface WfoRepository {
     suspend fun toggleOfficeAttendance(date: LocalDate)
 
     suspend fun markHoliday(date: LocalDate, name: String? = null)
+    suspend fun markHolidayRange(startDate: LocalDate, endDate: LocalDate, name: String? = null)
     suspend fun clearHoliday(date: LocalDate)
 
     suspend fun markLeave(date: LocalDate, reason: String? = null)
+    suspend fun markLeaveRange(startDate: LocalDate, endDate: LocalDate, reason: String? = null)
     suspend fun clearLeave(date: LocalDate)
 
     suspend fun clearOverride(date: LocalDate)
@@ -38,3 +40,4 @@ interface WfoRepository {
     suspend fun importBackup(inputStream: InputStream): Result<Unit>
     suspend fun importBackupFromJson(jsonString: String): Result<Unit>
 }
+

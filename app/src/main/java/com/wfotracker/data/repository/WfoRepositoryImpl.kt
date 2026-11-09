@@ -155,6 +155,24 @@ class WfoRepositoryImpl(
         }
     }
 
+    override suspend fun markHolidayRange(startDate: LocalDate, endDate: LocalDate, name: String?) {
+        require(!endDate.isBefore(startDate)) { "End date $endDate cannot be before start date $startDate" }
+        dataStore.edit { preferences ->
+            val currentOverrides = parseOverridesFromJson(preferences[WfoDataStoreKeys.KEY_OVERRIDES_JSON] ?: "{}").toMutableMap()
+            val currentOffice = (preferences[WfoDataStoreKeys.KEY_OFFICE_DATES] ?: emptySet()).toMutableSet()
+
+            var curr = startDate
+            while (!curr.isAfter(endDate)) {
+                currentOverrides[curr] = DateOverride(curr, WfoDayState.HOLIDAY, name)
+                currentOffice.remove(curr.toString())
+                curr = curr.plusDays(1)
+            }
+
+            preferences[WfoDataStoreKeys.KEY_OVERRIDES_JSON] = serializeOverridesToJson(currentOverrides)
+            preferences[WfoDataStoreKeys.KEY_OFFICE_DATES] = currentOffice
+        }
+    }
+
     override suspend fun clearHoliday(date: LocalDate) {
         dataStore.edit { preferences ->
             val currentOverrides = parseOverridesFromJson(preferences[WfoDataStoreKeys.KEY_OVERRIDES_JSON] ?: "{}").toMutableMap()
@@ -175,6 +193,24 @@ class WfoRepositoryImpl(
             // Data integrity: Marking date as Leave strictly removes any existing Office Attendance on that date.
             val currentOffice = (preferences[WfoDataStoreKeys.KEY_OFFICE_DATES] ?: emptySet()).toMutableSet()
             currentOffice.remove(date.toString())
+            preferences[WfoDataStoreKeys.KEY_OFFICE_DATES] = currentOffice
+        }
+    }
+
+    override suspend fun markLeaveRange(startDate: LocalDate, endDate: LocalDate, reason: String?) {
+        require(!endDate.isBefore(startDate)) { "End date $endDate cannot be before start date $startDate" }
+        dataStore.edit { preferences ->
+            val currentOverrides = parseOverridesFromJson(preferences[WfoDataStoreKeys.KEY_OVERRIDES_JSON] ?: "{}").toMutableMap()
+            val currentOffice = (preferences[WfoDataStoreKeys.KEY_OFFICE_DATES] ?: emptySet()).toMutableSet()
+
+            var curr = startDate
+            while (!curr.isAfter(endDate)) {
+                currentOverrides[curr] = DateOverride(curr, WfoDayState.LEAVE, reason)
+                currentOffice.remove(curr.toString())
+                curr = curr.plusDays(1)
+            }
+
+            preferences[WfoDataStoreKeys.KEY_OVERRIDES_JSON] = serializeOverridesToJson(currentOverrides)
             preferences[WfoDataStoreKeys.KEY_OFFICE_DATES] = currentOffice
         }
     }
@@ -265,3 +301,4 @@ class WfoRepositoryImpl(
         return json.encodeToString(dtoMap)
     }
 }
+

@@ -25,3 +25,4 @@ data class BackupJsonDto(
     @SerialName("office") val office: List<String> = emptyList(),
     @SerialName("overrides") val overrides: Map<String, OverrideDetailDto> = emptyMap()
 )
+

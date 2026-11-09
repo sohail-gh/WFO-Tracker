@@ -202,4 +202,40 @@ class WfoRepositoryTest {
         val state = repository.getAttendanceState()
         assertTrue(state.officeAttendanceDates.contains(initialOfficeDate))
     }
+
+    @Test
+    fun `test markHolidayRange atomically marks range and clears office attendance`() = runBlocking {
+        val start = LocalDate.of(2026, 12, 23)
+        val middle = LocalDate.of(2026, 12, 24)
+        val end = LocalDate.of(2026, 12, 25)
+
+        repository.markOfficeAttendance(middle)
+        repository.markHolidayRange(start, end, "Christmas Holidays")
+
+        val state = repository.getAttendanceState()
+        assertEquals(3, state.overrides.size)
+        assertEquals(WfoDayState.HOLIDAY, state.overrides[start]?.state)
+        assertEquals(WfoDayState.HOLIDAY, state.overrides[middle]?.state)
+        assertEquals(WfoDayState.HOLIDAY, state.overrides[end]?.state)
+        assertEquals("Christmas Holidays", state.overrides[middle]?.name)
+        assertFalse("Office attendance must be cleared", state.officeAttendanceDates.contains(middle))
+    }
+
+    @Test
+    fun `test markLeaveRange atomically marks range and clears office attendance`() = runBlocking {
+        val start = LocalDate.of(2026, 8, 3)
+        val middle = LocalDate.of(2026, 8, 4)
+        val end = LocalDate.of(2026, 8, 5)
+
+        repository.markOfficeAttendance(middle)
+        repository.markLeaveRange(start, end, "Annual Leave")
+
+        val state = repository.getAttendanceState()
+        assertEquals(3, state.overrides.size)
+        assertEquals(WfoDayState.LEAVE, state.overrides[start]?.state)
+        assertEquals(WfoDayState.LEAVE, state.overrides[middle]?.state)
+        assertEquals(WfoDayState.LEAVE, state.overrides[end]?.state)
+        assertEquals("Annual Leave", state.overrides[middle]?.name)
+        assertFalse("Office attendance must be cleared", state.officeAttendanceDates.contains(middle))
+    }
 }
